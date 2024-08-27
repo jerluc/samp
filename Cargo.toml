@@ -1,0 +1,14 @@
+[package]
+name = "samp"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+argh = "0.1.12"
+rand = "0.8.5"
+rand_seeder = "0.3.0"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
