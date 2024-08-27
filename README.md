@@ -12,7 +12,7 @@ To get started, install `samp` from source:
 cargo install --git https://github.com/jerluc/samp.git
 
 # Or from local source
-git clone https://github.com/jerluc/sampsampgit && cd samp/ && cargo install --path .
+git clone https://github.com/jerluc/samp.git && cd samp/ && cargo install --path .
 ```
 
 ## Usage
