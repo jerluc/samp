@@ -6,9 +6,9 @@ use std::io::{stdin, BufRead, Result};
 #[derive(FromArgs)]
 /// Sample stdin
 struct SampCli {
-    #[argh(option, short = 'r')]
+    #[argh(option, short = 'r', default = "0.5")]
     /// sample ratio
-    ratio: Option<f32>,
+    ratio: f32,
 
     #[argh(option, short = 's')]
     /// seed string
@@ -18,25 +18,18 @@ struct SampCli {
 fn main() -> Result<()> {
     let args: SampCli = argh::from_env();
 
-    let sample_ratio = args.ratio.unwrap_or(0.5);
-
-    let mut rng = if let Some(seed) = args.seed {
-        Seeder::from(seed).make_rng()
-    } else {
-        SipHasher::new().into_rng()
+    let mut rng = match args.seed {
+        Some(seed) => Seeder::from(seed).make_rng(),
+        None => SipHasher::new().into_rng(),
     };
 
-    let stdin = stdin();
-    let mut lines = stdin.lock().lines();
-    while let Some(line) = lines.next() {
-        if let Ok(line) = line {
-            let dice: f32 = rng.gen();
-            if dice < sample_ratio {
-                println!("{}", line);
-            }
-        } else {
-            break;
-        }
+    for line in stdin()
+        .lock()
+        .lines()
+        .filter(|_| rng.gen::<f32>() < args.ratio)
+    {
+        println!("{}", line?)
     }
+
     Ok(())
 }
